@@ -1,0 +1,24 @@
+{
+  "name": "CarterBackend",
+  "version": "1.0.0",
+  "description": "http://blackshark.io/",
+  "license": "GNU GENERAL PUBLIC LICENSE",
+   "repository": {
+    "type": "git",
+    "url": "https://genomma.visualstudio.com/DefaultCollection/_git/tugrua"
+  },
+  "readme": "https://github.com/thEpisode/Walking",
+  "dependencies": {
+    "express": "latest",
+    "mongoose": "latest",
+    "morgan": "latest",
+    "body-parser": "latest",
+    "jsonwebtoken": "latest",
+    "socket.io": "latest",
+    "is-online": "latest",
+    "ejs": "latest"
+  },
+  "scripts" : {
+    "start" : "node app.js"
+  }
+}
