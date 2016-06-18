@@ -16,7 +16,8 @@
     "jsonwebtoken": "latest",
     "socket.io": "latest",
     "is-online": "latest",
-    "ejs": "latest"
+    "ejs": "latest",
+    "node-uuid": "latest"
   },
   "scripts" : {
     "start" : "node app.js"
