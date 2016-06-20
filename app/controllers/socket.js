@@ -16,7 +16,7 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 
 	createNamespace();
 
-	io.sockets.on('connection', function(socket){     
+	io.of('').on('connection', function(socket){     
 
 		console.log('-' + socket.id);
 	
@@ -24,6 +24,8 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 		socket.emit('Welcome', {SocketId : socket.id});
 
 		socket.on('JoinToApp',function(data,join_cb){
+            console.log('socket.on.JoinToApp')
+            console.log(join_cb)
 			var last_ns = ns_queue[ns_queue.length - 1];
 			if(last_ns.clients >= MAX_CLIENTS){
 				last_ns = createNamespace();
