@@ -1,11 +1,20 @@
 function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 
-	var MAX_CLIENTS = 2;
+	var MAX_CLIENTS = 5;
 	var ns_queue = [];
 
-	function createNamespace(){
+    function searchObjectOnArray(nameKey, myArray) {
+        for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i].id === nameKey) {
+                return myArray[i];
+            }
+        }
+    }
+
+	function createNamespace(data){
 		var ns = {
-					id: require('node-uuid')(),
+					//id: require('node-uuid')(),
+                    id : data.name,
 					clients: 0, 
 				};
 
@@ -14,7 +23,7 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 		return ns;
 	}
 
-	createNamespace();
+	createNamespace({name: 'primer'});
 
 	io.of('').on('connection', function(socket){     
 
@@ -22,20 +31,28 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 	
 		/// Welcome to the new client
 		socket.emit('Welcome', {SocketId : socket.id});
+        
+        socket.on('JoinToApp', function (data, callback) {
+            var namespaceToConnect = searchObjectOnArray(data.namespace, ns_queue)
+            if(namespaceToConnect.clients <= MAX_CLIENTS){
+                var dyn_ns = io.of('/' + namespaceToConnect.id);
+				
+                dyn_ns.on('connection', function(ns_socket){
+                        console.log('user connected to ' + namespaceToConnect.id);
+                        dyn_ns.emit('hi', 'everyone!');
+                    });
+                    
+			    namespaceToConnect.clients++;  
+            }          
+            
+            callback({namespaces:ns_queue});
+        })
+        
+		socket.on('createNamespace',function(data,join_cb){
+            
+			createNamespace(data);
 
-		socket.on('JoinToApp',function(data,join_cb){
-            console.log('socket.on.JoinToApp')
-            console.log(join_cb)
-			var last_ns = ns_queue[ns_queue.length - 1];
-			if(last_ns.clients >= MAX_CLIENTS){
-				last_ns = createNamespace();
-
-				var dyn_ns = io.of('/' + last_ns.id)
-							.on('connection', function(ns_socket){console.log('user connected to ' + last_ns.id);});
-			}
-
-			last_ns.clients++;
-			join_cb({namespace:last_ns.id});
+			join_cb({message:'Namespace created'});
 		});
 	
 		/* 

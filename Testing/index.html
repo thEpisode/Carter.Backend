@@ -1,13 +1,40 @@
+<input id="namespaceInput" type="text" placeholder="New namespace name">
+<input id="namespaceToConnect" type="text" placeholder="namespace to connect">
+
+<button onclick="javascript: createNamespace()">Crear Namespace</button>
+<button onclick="javascript: joinToNamespace()">Conectarse</button>
+
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
+    var socket = null;
    (function(){
-       var socket = io.connect('http://localhost:3000/');
+       socket = io.connect('http://localhost:3000/');
+       /*var dynSpace = io.connect('http://localhost:3000/b9d08525-ac54-4395-8dcd-48fcc81f6d3f');
 
-        socket.emit('JoinToApp', null, function(data){
-            console.log('data:')
-            console.log(data)
-        var ns_socket = io('http://localhost:3000/' + data.namespace);
-        ns_socket.on('connect',function(){console.log('joined namespace ' + data.namespace);});
-        });
+       dynSpace.on('hi', function(data){
+           console.log('hi!')
+       })*/
+        
    })()
+   
+   function createNamespace(){
+       var namespaceName = document.getElementById("namespaceInput").value;
+       socket.emit('createNamespace', {name : namespaceName}, function(data){
+           alert(data.message);
+       })
+   }
+   
+   function joinToNamespace(){
+       var name = document.getElementById("namespaceToConnect").value;
+       socket.emit('JoinToApp', {namespace: name}, function(data){
+            console.log('Namespaces created:');
+            console.log(data)
+            
+            var ns_socket = io.connect('http://localhost:3000/' + name);
+            ns_socket.on('connect',function(){
+                console.log('joined namespace ' + name);
+            });
+        });
+       
+   }
 </script>
