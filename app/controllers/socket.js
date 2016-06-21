@@ -1,7 +1,7 @@
 function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 
 	var MAX_CLIENTS = 5;
-	var ns_queue = [];
+	var namespace_queue = [];
 
     function searchObjectOnArray(nameKey, myArray) {
         for (var i = 0; i < myArray.length; i++) {
@@ -18,7 +18,7 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 					clients: 0, 
 				};
 
-		ns_queue.push(ns);
+		namespace_queue.push(ns);
 
 		return ns;
 	}
@@ -33,19 +33,19 @@ function initialize(io, globals, mongoose, User, DetailedUser, Crane){
 		socket.emit('Welcome', {SocketId : socket.id});
         
         socket.on('JoinToApp', function (data, callback) {
-            var namespaceToConnect = searchObjectOnArray(data.namespace, ns_queue)
+            var namespaceToConnect = searchObjectOnArray(data.namespace, namespace_queue)
             if(namespaceToConnect.clients <= MAX_CLIENTS){
-                var dyn_ns = io.of('/' + namespaceToConnect.id);
+                var dynamicNamespace = io.of('/' + namespaceToConnect.id);
 				
-                dyn_ns.on('connection', function(ns_socket){
+                dynamicNamespace.on('connection', function(ns_socket){
                         console.log('user connected to ' + namespaceToConnect.id);
-                        dyn_ns.emit('hi', 'everyone!');
+                        dynamicNamespace.emit('hi', 'everyone!');
                     });
                     
 			    namespaceToConnect.clients++;  
             }          
             
-            callback({namespaces:ns_queue});
+            callback({namespaces:namespace_queue});
         })
         
 		socket.on('createNamespace',function(data,join_cb){

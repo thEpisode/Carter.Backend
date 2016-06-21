@@ -1,8 +1,8 @@
 <input id="namespaceInput" type="text" placeholder="New namespace name">
 <input id="namespaceToConnect" type="text" placeholder="namespace to connect">
 
-<button onclick="javascript: createNamespace()">Crear Namespace</button>
-<button onclick="javascript: joinToNamespace()">Conectarse</button>
+<button onclick="javascript: createNamespace()">Create Namespace</button>
+<button onclick="javascript: joinToNamespace()">Connect Namespace</button>
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
@@ -34,6 +34,10 @@
             ns_socket.on('connect',function(){
                 console.log('joined namespace ' + name);
             });
+            
+            ns_socket.on('hi', function(data){
+                console.log('hi ' + data)
+            })
         });
        
    }
